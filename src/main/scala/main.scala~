@@ -1,0 +1,46 @@
+
+@main
+def main(): Unit = {
+  println("Hello world!")
+}
+object DungeonCrawler {
+  var playerPosition = (0, 0) // Initial player position
+  var gameRunning = true // Game running flag
+
+  def main(args: Array[String]): Unit = {
+    val dungeon = Array.fill(5, 5)("_")
+    dungeon(playerPosition._1)(playerPosition._2) = "P"
+
+    while (gameRunning) {
+      printDungeon(dungeon)
+      val input = scala.io.StdIn.readLine("Enter move (w/a/s/d): ")
+      movePlayer(input, dungeon)
+    }
+  }
+
+  def movePlayer(direction: String, dungeon: Array[Array[String]]): Unit = {
+    val (x, y) = playerPosition
+    dungeon(x)(y) = "_" // Clear the current position
+
+    direction match {
+      case "w" if x > 0 => playerPosition = (x - 1, y)
+      case "s" if x < dungeon.length - 1 => playerPosition = (x + 1, y)
+      case "a" if y > 0 => playerPosition = (x, y - 1)
+      case "d" if y < dungeon(0).length - 1 => playerPosition = (x, y + 1)
+      case _ => // Invalid move or out of bounds
+    }
+
+    val (newX, newY) = playerPosition
+    dungeon(newX)(newY) = "P" // Set the new position
+
+    // Check for win/lose conditions here (if any)
+    // For now, we will just keep the game running indefinitely
+  }
+
+  def printDungeon(dungeon: Array[Array[String]]): Unit = {
+    for (row <- dungeon) {
+      println(row.mkString(" "))
+    }
+    println()
+  }
+}
