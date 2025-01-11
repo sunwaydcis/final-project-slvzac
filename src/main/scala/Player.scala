@@ -6,7 +6,7 @@ class Player(var x: Int, var y: Int, var health: Int) {
   var specialCooldown: Int = 0
   var skipMonsterTurn: Boolean = false
 
-  def move(direction: String, dungeon: Dungeon, monster: Monster): Unit = {
+  def move(direction: String, dungeon: Dungeon, monsters: List[Monster]): Unit = {
     dungeon.updatePosition(x, y, "_") // Clear current position
 
     direction match {

@@ -2,39 +2,59 @@ import scala.util.Random
 
 object DungeonCrawler {
   def main(args: Array[String]): Unit = {
-    val dungeon = new Dungeon(5, 5)
-    val player = new Player(0, 0, 100)
-    val monster = new Monster(4, 4, 50)
+    var levelNumber = 1
+    var continueGame = true
 
-    dungeon.updatePosition(player.x, player.y, "P")
-    dungeon.updatePosition(monster.x, monster.y, "M")
+    while (continueGame) {
+      println(s"Starting Level $levelNumber")
+      val level = new Level(levelNumber, 5 + levelNumber, 5 + levelNumber)
+      val dungeon = new Dungeon(level.dungeonWidth, level.dungeonHeight)
+      val player = new Player(0, 0, 100)
+      var monsters = level.generateMonsters()
+      var treasures = level.generateTreasures()
 
-    while (player.health > 0 && monster.health > 0) {
-      dungeon.printDungeon()
-      val input = scala.io.StdIn.readLine("Enter move (w/a/s/d): ")
-      player.move(input, dungeon, monster)
-      if (player.health > 0 && monster.health > 0) {
-        monster.move(dungeon)
-        if (player.x == monster.x && player.y == monster.y) {
-          println("Player encounters the monster!")
-          val action = player.combat()
-          handleCombat(action, player, monster)
+      dungeon.updatePosition(player.x, player.y, "P")
+      monsters.foreach(monster => dungeon.updatePosition(monster.x, monster.y, "M"))
+      dungeon.spawnTreasure(treasures)
+
+      while (player.health > 0 && treasures.nonEmpty) {
+        dungeon.updateDisplay()
+        dungeon.printDungeon()
+        val input = scala.io.StdIn.readLine("Enter move (w/a/s/d): ")
+        player.move(input, dungeon, monsters)
+        if (player.health > 0) {
+          monsters.foreach(_.move(dungeon))
+          monsters.filter(monster => player.x == monster.x && player.y == monster.y).foreach { monster =>
+            println("Player encounters a monster!")
+            val action = player.combat()
+            handleCombat(action, player, monster)
+            if (monster.health <= 0) {
+              println("Monster is defeated and disappears from the dungeon!")
+              dungeon.updatePosition(monster.x, monster.y, "_")
+              monsters = monsters.filterNot(_ == monster)
+            }
+          }
+          treasures.filter(treasure => player.x == treasure.x && player.y == treasure.y).foreach { treasure =>
+            println(s"Player collects a ${treasure.name} worth ${treasure.value} points!")
+            dungeon.updatePosition(treasure.x, treasure.y, "_")
+            treasures = treasures.filterNot(_ == treasure)
+          }
         }
       }
-    }
 
-    if (player.health <= 0) {
-      println("Game Over! The player has been defeated.")
-    } else if (monster.health <= 0) {
-      println("Congratulations! The monster has been defeated.")
+      if (player.health <= 0) {
+        println("Game Over! The player has been defeated.")
+        continueGame = false
+      } else if (treasures.isEmpty) {
+        println(s"Congratulations! Level $levelNumber completed.")
+        levelNumber += 1
+      }
     }
   }
 
-  // Combat logic and announcements
   def handleCombat(action: String, player: Player, monster: Monster): Unit = {
     var continueCombat = true
 
-    // Player's turn:
     while (continueCombat && player.health > 0 && monster.health > 0) {
       action match {
         case "attack" =>
@@ -73,7 +93,6 @@ object DungeonCrawler {
         case _ => println("Invalid action")
       }
 
-      // Monster's turn:
       if (monster.health > 0 && !player.usedPotion && !player.skipMonsterTurn) {
         val damage = if (Random.nextInt(6) == 0) {
           println("Monster performs special attack on player!")
@@ -97,7 +116,6 @@ object DungeonCrawler {
         println("Monster is defeated!")
         continueCombat = false
       } else {
-        // Prompt for the next action
         val nextAction = player.combat()
         handleCombat(nextAction, player, monster)
       }
