@@ -21,8 +21,8 @@ class Monster(var x: Int, var y: Int, var health: Int) {
   }
 
   def attack(player: Player): Unit = {
-    val damage = 2 + Random.nextInt(9) // RNG dmg between 2 and 10
-    println(s"Monster attacks the player, inflicting $damage damage!")
+    val damage = 2 + Random.nextInt(9) // Random damage between 2 and 10
+    println("Monster attacks the player, inflicting $damage damage!")
     player.health -= damage
     if (player.health <= 0) {
       println("Player is defeated!")
@@ -32,8 +32,7 @@ class Monster(var x: Int, var y: Int, var health: Int) {
   }
 
   def specialAttack(player: Player): Unit = {
-    val damage = 2 + Random.nextInt(9) // RNG
-    println(s"Monster performs a special attack on the player, inflicting $damage damage!")
+    println("Monster performs a special attack on the player!")
     player.health -= 20
     if (player.health <= 0) {
       println("Player is defeated!")

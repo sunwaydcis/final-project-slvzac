@@ -1,6 +1,10 @@
+import scala.util.Random
+
 class Player(var x: Int, var y: Int, var health: Int) {
   var inventory: List[Item] = List(new Potion("Healing Potion", 20))
   var usedPotion: Boolean = false
+  var specialCooldown: Int = 0
+  var skipMonsterTurn: Boolean = false
 
   def move(direction: String, dungeon: Dungeon, monster: Monster): Unit = {
     dungeon.updatePosition(x, y, "_") // Clear current position
@@ -13,35 +17,43 @@ class Player(var x: Int, var y: Int, var health: Int) {
       case _ => // Invalid move or out of bounds
     }
 
-    if (x == monster.x && y == monster.y) {
-      combat(monster)
-    } else {
-      dungeon.updatePosition(x, y, "P") // Set new position
-    }
+    dungeon.updatePosition(x, y, "P") // Set new position
   }
 
   def combat(monster: Monster): Unit = {
     println("Player encounters the monster!")
     while (health > 0 && monster.health > 0) {
-      println("Choose action: attack, heavy, special, heal")
+      println("Choose action: attack, block, special, heal")
       val action = scala.io.StdIn.readLine()
       usedPotion = false
+      skipMonsterTurn = false
       action match {
         case "attack" => attack(monster)
-        case "heavy" => heavyAttack(monster)
-        case "special" => useSpecialAbility(monster)
+        case "block" => blockAttack(monster)
+        case "special" =>
+          if (specialCooldown == 0) {
+            useSpecialAbility(monster)
+            specialCooldown = 3 // Reset cooldown
+          } else {
+            println(s"Special ability is on cooldown for $specialCooldown more turns.")
+            skipMonsterTurn = true
+          }
         case "heal" => usePotion()
         case _ => println("Invalid action")
       }
-      if (monster.health > 0 && !usedPotion) {
+      if (monster.health > 0 && !usedPotion && !skipMonsterTurn) {
         monster.attack(this)
+      }
+      if (specialCooldown > 0 && !skipMonsterTurn) {
+        specialCooldown -= 1 // Decrement cooldown each turn
       }
     }
   }
 
   def attack(monster: Monster): Unit = {
-    println("Player attacks the monster!")
-    monster.health -= 10
+    val damage = 5 + Random.nextInt(6)// Random damage between 5 and 10
+    println(s"Player attacks the monster, inflicting $damage damage!")
+    monster.health -= damage
     if (monster.health <= 0) {
       println("Monster is defeated!")
     } else {
@@ -49,19 +61,22 @@ class Player(var x: Int, var y: Int, var health: Int) {
     }
   }
 
-  def heavyAttack(monster: Monster): Unit = {
-    println("Player performs a heavy attack on the monster!")
-    monster.health -= 20
-    if (monster.health <= 0) {
-      println("Monster is defeated!")
+  def blockAttack(monster: Monster): Unit = {
+    println("Player blocks the monster's attack!")
+    // Reduce the damage taken by half
+    val damage = 5
+    health -= damage
+    if (health <= 0) {
+      println("Player is defeated!")
     } else {
-      println(s"Monster's health: ${monster.health}")
+      println(s"Player's health: ${health}")
     }
   }
 
   def useSpecialAbility(monster: Monster): Unit = {
-    println("Player uses a special ability!")
-    monster.health -= 30
+    val damage = 20 +  Random.nextInt(21)// Random damage between 20 and 40
+    println(s"Player uses a special ability inflicting $damage damage!")
+    monster.health -= damage
     if (monster.health <= 0) {
       println("Monster is defeated!")
     } else {
@@ -83,6 +98,7 @@ class Player(var x: Int, var y: Int, var health: Int) {
           println(s"Player's health: $health")
         } else {
           println("Potion use canceled.")
+          skipMonsterTurn = true
         }
       case None =>
         println("No potions left!")
