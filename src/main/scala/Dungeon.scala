@@ -3,6 +3,8 @@ import scala.util.Random
 class Dungeon(val width: Int, val height: Int) {
   val grid: Array[Array[String]] = Array.fill(width, height)("_")
   val treasures = scala.collection.mutable.Set[(Int, Int)]()
+  val monsters = scala.collection.mutable.Set[(Int, Int)]()
+  var playerPosition: (Int, Int) = (0, 0)
 
   def printDungeon(): Unit = {
     for (row <- grid) {
@@ -12,10 +14,13 @@ class Dungeon(val width: Int, val height: Int) {
   }
 
   def updatePosition(x: Int, y: Int, symbol: String): Unit = {
-    if (symbol == "T") {
-      treasures.add((x, y))
-    } else if (symbol == "_") {
-      treasures.remove((x, y))
+    symbol match {
+      case "T" => treasures.add((x, y))
+      case "M" => monsters.add((x, y))
+      case "P" => playerPosition = (x, y)
+      case "_" =>
+        treasures.remove((x, y))
+        monsters.remove((x, y))
     }
     grid(x)(y) = symbol
   }
@@ -38,9 +43,11 @@ class Dungeon(val width: Int, val height: Int) {
 
   def updateDisplay(): Unit = {
     for (x <- 0 until width; y <- 0 until height) {
-      if (treasures.contains((x, y))) {
-        grid(x)(y) = "T"
-      }
+      grid(x)(y) = "_"
     }
+    treasures.foreach { case (x, y) => grid(x)(y) = "T" }
+    monsters.foreach { case (x, y) => grid(x)(y) = "M" }
+    val (px, py) = playerPosition
+    grid(px)(py) = "P"
   }
 }

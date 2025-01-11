@@ -26,7 +26,7 @@ class Player(var x: Int, var y: Int, var health: Int) {
   }
 
   def attack(monster: Monster): Int = {
-    val damage = 5 + Random.nextInt(6) // Random damage between 5 and 10
+    val damage = 10 + Random.nextInt(11) // Random damage between 10 and 20
     monster.health -= damage
     damage
   }

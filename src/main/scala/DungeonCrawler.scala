@@ -27,7 +27,7 @@ object DungeonCrawler {
           monsters.filter(monster => player.x == monster.x && player.y == monster.y).foreach { monster =>
             println("Player encounters a monster!")
             val action = player.combat()
-            handleCombat(action, player, monster)
+            handleCombat(action, player, monster, dungeon)
             if (monster.health <= 0) {
               println("Monster is defeated and disappears from the dungeon!")
               dungeon.updatePosition(monster.x, monster.y, "_")
@@ -52,7 +52,7 @@ object DungeonCrawler {
     }
   }
 
-  def handleCombat(action: String, player: Player, monster: Monster): Unit = {
+  def handleCombat(action: String, player: Player, monster: Monster, dungeon: Dungeon): Unit = {
     var continueCombat = true
 
     while (continueCombat && player.health > 0 && monster.health > 0) {
@@ -105,7 +105,7 @@ object DungeonCrawler {
         println(s"Player's health: ${player.health}")
       }
 
-      if (player.specialCooldown > 0 && !player.skipMonsterTurn) {
+      if (player.specialCooldown > 0) {
         player.specialCooldown -= 1 // Decrement cooldown each turn
       }
 
@@ -114,10 +114,11 @@ object DungeonCrawler {
         continueCombat = false
       } else if (monster.health <= 0) {
         println("Monster is defeated!")
+        dungeon.updatePosition(monster.x, monster.y, "_")
         continueCombat = false
       } else {
         val nextAction = player.combat()
-        handleCombat(nextAction, player, monster)
+        handleCombat(nextAction, player, monster, dungeon)
       }
     }
   }
