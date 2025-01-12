@@ -1,67 +1,57 @@
-import scalafx.scene.image.{Image, ImageView}
-import scalafx.scene.layout.GridPane
-import scalafxml.core.macros.sfxml
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
-import scala.concurrent.{Future, blocking}
+import javafx.fxml.{FXML, Initializable}
+import javafx.scene.image.{Image, ImageView}
+import javafx.scene.layout.{StackPane, GridPane}
+import java.net.URL
+import java.util.ResourceBundle
 
-@sfxml
-class DungeonViewController(private val dungeonGrid: GridPane) {
+class DungeonViewController extends Initializable {
 
-  private val playerImages = Seq(
-    new Image("file:assets/player_1.png"),
-    new Image("file:assets/player_2.png"),
-    new Image("file:assets/player_3.png"),
-    new Image("file:assets/player_4.png")
-  )
+  @FXML private var dungeonGrid: GridPane = _
 
-  private val monsterImages = Seq(
-    new Image("file:assets/monster_1.png"),
-    new Image("file:assets/monster_2.png"),
-    new Image("file:assets/monster_3.png"),
-    new Image("file:assets/monster_4.png")
-  )
+  private val walkableTile = new Image("file:assets/Walkable_Tile.png")
+  private val tileSize = 50 // Increase the tile size for better visibility
 
-  private val treasureImages = Seq(
-    new Image("file:assets/chest_1.png"),
-    new Image("file:assets/chest_2.png"),
-    new Image("file:assets/chest_3.png"),
-    new Image("file:assets/chest_4.png")
-  )
-
-  private var animationIndex = 0
-
-  def initialize(): Unit = {
-    // Initialize the dungeon grid with images or other elements
-    startAnimation()
+  override def initialize(location: URL, resources: ResourceBundle): Unit = {
+    // Initialize the grid with walkable tiles
+    for (i <- 0 until 5; j <- 0 until 5) {
+      val imageView = new ImageView(walkableTile) {
+        setFitWidth(tileSize)
+        setFitHeight(tileSize)
+        setPreserveRatio(true)
+      }
+      val stackPane = new StackPane() {
+        getChildren.add(imageView)
+        setStyle("-fx-border-color: red;") // Add a border to make the StackPane more visible
+        setMinWidth(tileSize)
+        setMinHeight(tileSize)
+      }
+      GridPane.setConstraints(stackPane, i, j)
+      dungeonGrid.add(stackPane, i, j)
+      println(s"Added StackPane at position ($i, $j) with ImageView")
+    }
+    println("GridPane initialized with walkable tiles.")
   }
 
   def updateDungeon(dungeon: Dungeon): Unit = {
-    dungeonGrid.children.clear()
+    dungeonGrid.getChildren.clear()
+    println("Updating dungeon grid:")
     for (x <- 0 until dungeon.width; y <- 0 until dungeon.height) {
       val symbol = dungeon.grid(x)(y)
-      val imageView = new ImageView(symbol match {
-        case "P" => playerImages(animationIndex)
-        case "M" => monsterImages(animationIndex)
-        case "T" => treasureImages(animationIndex)
-        case _ => new Image("file:assets/empty.png")
-      }) {
-        fitWidth = 16
-        fitHeight = 16
+      println(s"Position ($x, $y): $symbol")
+      val imageView = new ImageView(walkableTile) {
+        setFitWidth(tileSize)
+        setFitHeight(tileSize)
+        setPreserveRatio(true)
       }
-      dungeonGrid.add(imageView, x, y)
-    }
-  }
-
-  private def startAnimation(): Unit = {
-    Future {
-      while (true) {
-        blocking {
-          Thread.sleep(250) // Change frame every 250ms
-          animationIndex = (animationIndex + 1) % 4
-          updateDungeon(currentDungeon) // Assuming currentDungeon is a reference to the current dungeon state
-        }
+      val stackPane = new StackPane() {
+        getChildren.add(imageView)
+        setStyle("-fx-border-color: red;") // Add a border to make the StackPane more visible
+        setMinWidth(tileSize)
+        setMinHeight(tileSize)
       }
+      GridPane.setConstraints(stackPane, x, y)
+      dungeonGrid.add(stackPane, x, y)
+      println(s"Added StackPane at position ($x, $y) with ImageView")
     }
   }
 }

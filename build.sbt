@@ -16,4 +16,13 @@ lazy val root = (project in file("."))
       Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
         .map(m => "org.openjfx" % s"javafx-$m" % "21.0.4" classifier osName)
     },
-    libraryDependencies += "org.scalafx" %% "scalafxml-core-sfx8" % "0.5)
+    libraryDependencies ++= Seq(
+      "org.scalafx" %% "scalafxml-core-sfx8" % "0.5",
+      "org.scalafx" %% "scalafx" % "21.0.0-R30"
+    )
+  )
+
+javaOptions ++= Seq(
+  "--module-path", "C:/Users/Zachcowy/Downloads/javafx-sdk-23.0.1/lib",
+  "--add-modules", "javafx.controls,javafx.fxml"
+)
