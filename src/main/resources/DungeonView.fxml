@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.GridPane?>
 
 <AnchorPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-image: url('assets/Backdrop.png');" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="DungeonViewController">
-    <GridPane fx:id="dungeonGrid" style="-fx-background-color: white;" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="100.0">
+    <GridPane fx:id="dungeonGrid" prefHeight="650.0" prefWidth="650.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="50.0">
         <!-- GridPane content here -->
     </GridPane>
+    <Label fx:id="pointsLabel" layoutX="726.0" layoutY="14.0" style="-fx-font-size: 16px; -fx-text-fill: white;" text="Points: 0" AnchorPane.rightAnchor="-90.0" AnchorPane.topAnchor="-90.0" />
+    <Label fx:id="levelLabel" layoutX="733.0" layoutY="34.0" style="-fx-font-size: 16px; -fx-text-fill: white;" text="Level: 1" AnchorPane.rightAnchor="-90.0" AnchorPane.topAnchor="-64.0" />
+    <Label fx:id="healthLabel" style="-fx-font-size: 16px; -fx-text-fill: white;" text="Health: 100" AnchorPane.leftAnchor="-90.0" AnchorPane.topAnchor="-90.0" />
     <padding>
-        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+        <Insets bottom="100.0" left="100.0" right="100.0" top="100.0" />
     </padding>
 </AnchorPane>
