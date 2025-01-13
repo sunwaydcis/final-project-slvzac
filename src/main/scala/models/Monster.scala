@@ -1,3 +1,7 @@
+package models
+
+import controllers.DungeonViewController
+
 import scala.util.Random
 
 class Monster(var x: Int, var y: Int, var health: Int) {

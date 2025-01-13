@@ -1,3 +1,8 @@
+package models
+
+import controllers.DungeonViewController
+import models.{Item, Potion}
+
 class Player(var x: Int, var y: Int, var health: Int = 3) {
   var inventory: List[Item] = List(new Potion("Healing Potion", 20))
   var usedPotion: Boolean = false

@@ -1,13 +1,15 @@
+package controllers
+
+import javafx.animation.{Animation, KeyFrame, Timeline}
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control.Label
 import javafx.scene.image.{Image, ImageView}
-import javafx.scene.layout.{StackPane, GridPane}
+import javafx.scene.layout.{GridPane, StackPane}
+import javafx.util.Duration
+import models.Dungeon
+
 import java.net.URL
 import java.util.ResourceBundle
-import javafx.animation.{KeyFrame, Timeline}
-import javafx.util.Duration
-import javafx.scene.image.ImageView
-import javafx.animation.Animation
 
 class DungeonViewController extends Initializable {
 
@@ -15,7 +17,6 @@ class DungeonViewController extends Initializable {
   @FXML private var pointsLabel: Label = _
   @FXML private var levelLabel: Label = _
   @FXML private var healthLabel: Label = _
-  @FXML private var continueLabel: Label = _
 
   private val walkableTile = new Image(getClass.getResource("/assets/Walkable_Tile.png").toString)
   private val playerImages = Array(
@@ -132,9 +133,5 @@ class DungeonViewController extends Initializable {
 
   def updateHealth(health: Int): Unit = {
     healthLabel.setText(s"Health: $health")
-  }
-
-  def showContinueMessage(): Unit = {
-    continueLabel.setVisible(true)
   }
 }

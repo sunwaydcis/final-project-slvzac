@@ -1,17 +1,21 @@
-import scalafx.application.JFXApp3
-import scalafx.application.Platform
+package main
+
+import controllers.DungeonViewController
+import javafx.fxml.FXMLLoader
+import javafx.scene.layout.AnchorPane
+import javafx.scene.media.{AudioClip, Media, MediaPlayer}
+import main.MainGame.stage
+import models.{Dungeon, Monster, Player, Treasure}
+import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.Scene
 import scalafx.scene.control.Alert
 import scalafx.scene.control.Alert.AlertType
-import javafx.fxml.FXMLLoader
-import javafx.scene.layout.AnchorPane
 import scalafx.scene.layout.AnchorPane as SFXAnchorPane
+
 import java.io.File
 import scala.util.Random
-import javafx.scene.media.{Media, MediaPlayer}
-import javafx.scene.media.AudioClip
 
-object GameGUI extends JFXApp3 {
+object MainGame extends JFXApp3 {
 
   private var backgroundMusic: Option[AudioClip] = None
 
@@ -29,7 +33,7 @@ object GameGUI extends JFXApp3 {
     val root: AnchorPane = loader.load().asInstanceOf[AnchorPane]
 
     stage = new JFXApp3.PrimaryStage {
-      title = "Dungeon Crawler"
+      title = "models.Dungeon Crawler"
       scene = new Scene(new SFXAnchorPane(root), 800, 600)
       resizable = false
     }

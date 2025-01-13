@@ -1,3 +1,7 @@
+package models
+
+import models.Treasure
+
 class Dungeon(val width: Int, val height: Int) {
   val grid: Array[Array[List[String]]] = Array.fill(width, height)(List("_"))
   var treasures: List[Treasure] = List()

@@ -1,3 +1,5 @@
+package models
+
 abstract class Item(val name: String)
 
 class Treasure(name: String, val value: Int) extends Item(name) {

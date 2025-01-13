@@ -1,3 +1,7 @@
+package models
+
+import models.Treasure
+
 import scala.util.Random
 
 class Level(val number: Int, val dungeonWidth: Int, val dungeonHeight: Int) {

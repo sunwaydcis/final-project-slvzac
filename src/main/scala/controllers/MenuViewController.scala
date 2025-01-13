@@ -1,8 +1,11 @@
+package controllers
+
 import javafx.fxml.FXML
 import javafx.scene.control.Button
-import javafx.scene.image.ImageView
-import javafx.scene.image.Image
+import javafx.scene.image.{Image, ImageView}
 import scalafx.application.Platform
+import models.Dungeon
+import main.MainGame
 
 class MenuViewController {
 
@@ -14,6 +17,6 @@ class MenuViewController {
   def initialize(): Unit = {
     menuImage.setImage(new Image(getClass.getResource("/assets/Menu.png").toString))
     titleImage.setImage(new Image(getClass.getResource("/assets/TitleScreen.png").toString))
-    startButton.setOnAction(_ => Platform.runLater(() => GameGUI.startGame()))
+    startButton.setOnAction(_ => Platform.runLater(() => MainGame.startGame()))
   }
 }
